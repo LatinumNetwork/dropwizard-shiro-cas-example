@@ -96,7 +96,7 @@ task enrichedJar(type: Jar, dependsOn: "generateConfig") {
 
 project.ext.local = [
 		// CAS Details
-		casUrl: 'https://stage-cas.latinumnetwork.com:8443/cas',
+		casUrl: 'https://example.com:8443/cas',
 		// Server Config 
 		serverPort: '8085',
 		serverUrl: 'http://localhost',

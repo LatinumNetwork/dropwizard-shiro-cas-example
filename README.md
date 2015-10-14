@@ -29,10 +29,9 @@ gradle cleanEclipse eclipse
 
 # Viewing content
 in browser go to 
-`http://localhost:8085/index.html`
+`http://localhost:8085/api/permissions/subject`
+Will show you the principal
+to force a login you go to any url off of your base that isn't `/api/permissions/` or `/error.html`
 
-# API
-All the API calls will be available at
-`<serverUrl>/api/*`
-
-as defined by the configuration you built
+# Edits
+inside build.gradle you should modify `casUrl` to point to your CAS instance.
