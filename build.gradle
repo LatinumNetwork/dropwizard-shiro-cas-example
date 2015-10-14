@@ -1,0 +1,114 @@
+import org.apache.tools.ant.filters.FixCrLfFilter
+import org.apache.tools.ant.filters.ReplaceTokens
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'application'
+apply plugin: 'gradle-one-jar'
+
+mainClassName = "com.latinumnetwork.dw.ExampleApp"
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'com.github.rholder:gradle-one-jar:1.0.4'
+    }
+}
+
+project.ext {
+    dropwizardVersion = '0.8.0'
+}
+
+jar {
+  archiveName 'dw-example.jar'
+  manifest {
+    attributes ("Manifest-Version": "1.0",
+    			'Main-Class': 'com.latinumnetwork.crosstabs.CrosstabApp',
+    			"Class-Path" : '.'
+    			) 
+  }
+}
+
+repositories {
+  mavenCentral()
+  maven {url "http://repository.pentaho.org/artifactory/repo/" }
+}
+
+dependencies {
+  compile (
+    //dropwizard
+    ['io.dropwizard:dropwizard-core:'       + dropwizardVersion],
+    ['io.dropwizard:dropwizard-db:'         + dropwizardVersion],
+    ['io.dropwizard:dropwizard-jdbi:'       + dropwizardVersion],
+    ['io.dropwizard:dropwizard-testing:'    + dropwizardVersion],
+    ['io.dropwizard:dropwizard-assets:'     + dropwizardVersion],
+  
+    //hibernate
+    [group: 'org.hibernate', name: 'hibernate-core', version: '4.3.11.Final'],
+  
+    //olap4j
+    [group: 'org.olap4j', name: 'olap4j', version: '1.2.0'],
+    [group: 'org.olap4j', name: 'olap4j-xmla', version: '1.2.0'],
+    
+    //jdbc drivers
+    [group: 'org.postgresql', name: 'postgresql', version: '9.4-1201-jdbc41'],
+    [group: 'mysql', name: 'mysql-connector-java', version: '5.1.6'],
+    [group: 'pentaho', name: 'mondrian', version: '3.10.0.1-130'],
+    
+    //shiro-cas
+    [group: 'org.apache.shiro', name: 'shiro-core', version: '1.2.4'],
+    [group: 'org.apache.shiro', name: 'shiro-web', version: '1.2.4'],
+    [group: 'org.apache.shiro', name: 'shiro-cas', version: '1.2.4']
+    
+  )
+  
+  testCompile 'junit:junit:4.11'
+  
+}
+
+task fullJar(type: OneJar, dependsOn: 'build') {
+    mainClass = 'com.latinumnetwork.dw.ExampleApp'
+    archiveName 'dw-example-dependencies.jar'
+}
+
+// This adds the assets to the jar so we can run from wherever
+task enrichedJar(type: Jar, dependsOn: "generateConfig") { 
+    // Manually duplicating the OneJar manifest so that we can run.
+    manifest{
+      attributes(
+      			"Manifest-Version": "1.0",
+				"Ant-Version": "Apache Ant 1.9.3",
+				"Created-By": "1.8.0_51-b16 (Oracle Corporation)",
+				"Main-Class": "com.simontuffs.onejar.Boot",
+				"One-Jar-Main-Class": "com.latinumnetwork.dw.ExampleApp",
+				"One-Jar-Show-Expand": "false",
+				"One-Jar-Confirm-Expand": "false"
+                )
+    }
+    baseName 'dw-example'
+    appendix "enriched" 
+    from zipTree('build/libs/dw-example-dependencies.jar') // add original content 
+    from file('build/resources/main')    // add new content
+}
+
+project.ext.local = [
+		// CAS Details
+		casUrl: 'https://stage-cas.latinumnetwork.com:8443/cas',
+		// Server Config 
+		serverPort: '8085',
+		serverUrl: 'http://localhost',
+	]
+
+task generateConfig (type: Copy, dependsOn: 'fullJar'){
+	from 'src/main/resources'
+	into 'build/resources/main'
+	
+	// If env is not set default to local
+	if(!project.hasProperty("env")){
+		println "Environment not specified. Defaulting to local environment"
+		filter(ReplaceTokens, tokens:project.ext.local)
+	}
+}

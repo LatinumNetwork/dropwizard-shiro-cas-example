@@ -1,0 +1,26 @@
+server:
+  rootPath: /api/*
+  applicationContextPath: /
+  applicationConnectors:
+    - type: http
+      port: @serverPort@
+
+shiro_configuration:
+    enabled: true
+    dropwizard_session_handler: false
+
+logging:
+  level: INFO
+
+  loggers:
+    com.latinumnetwork: INFO
+
+  appenders:
+    - type: console
+    - type: file
+      threshold: INFO
+      logFormat: "%-6level [%d{HH:mm:ss.SSS}] [%t] %logger{5} - %X{code} %msg %n"
+      currentLogFilename: /tmp/crosstab.log
+      archivedLogFilenamePattern: /tmp/application-%d{yyyy-MM-dd}-%i.log.gz
+      archivedFileCount: 7
+      timeZone: UTC
