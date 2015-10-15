@@ -6,8 +6,7 @@ server:
       port: @serverPort@
 
 shiro_configuration:
-    enabled: true
-    dropwizard_session_handler: false
+  secured_url_pattern: /*
 
 logging:
   level: INFO
