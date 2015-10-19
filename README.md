@@ -1,5 +1,9 @@
 # Dropwizard - Shiro - CAS - Gradle Example
-Wanted to put together a quick example that showed how to get Dropwizard working using Gradle, CAS, and Shiro. Spent some time digging around and couldn't find a concise example so here it is. Some of hte configuration
+Wanted to put together a quick example that showed how to get Dropwizard working using Gradle, CAS, and Shiro. Spent some time digging around and couldn't find a concise example so here it is. 
+
+Heavily referenced some of the Shiro-Dropwizard integration from here:
+https://github.com/silb/dropwizard-shiro
+https://github.com/Multifarious/dw-shiro-bundle
 
 # Prereqs
 1. Java 1.8
@@ -9,10 +13,11 @@ Wanted to put together a quick example that showed how to get Dropwizard working
 # Building
 From the root project folder
 ```
-gradle clean enrichedJar -P<env>
+gradle clean enrichedJar -Penv=<env>
 ```
 
 <env> will be the environment we're building for.
+Right now only works for local
 
 # Environments
 We support four environments to run crosstabs from
