@@ -2,7 +2,9 @@
 Wanted to put together a quick example that showed how to get Dropwizard working using Gradle, CAS, and Shiro. Spent some time digging around and couldn't find a concise example so here it is. 
 
 Heavily referenced some of the Shiro-Dropwizard integration from here:
+
 https://github.com/silb/dropwizard-shiro
+
 https://github.com/Multifarious/dw-shiro-bundle
 
 # Prereqs
